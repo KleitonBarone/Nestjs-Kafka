@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiGatewayService } from './api-gateway.service';
+import { CreateOrderRequest } from './create-order-request-dto';
 
 @Controller()
 export class ApiGatewayController {
@@ -8,5 +9,10 @@ export class ApiGatewayController {
   @Get()
   getHello(): string {
     return this.apiGatewayService.getHello();
+  }
+
+  @Post()
+  createOrder(@Body() createOrderRequest: CreateOrderRequest): void {
+    return this.apiGatewayService.createOrder(createOrderRequest);
   }
 }
