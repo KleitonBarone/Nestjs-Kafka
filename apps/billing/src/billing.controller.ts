@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import { BillingService } from './billing.service';
 
 @Controller()
@@ -8,5 +9,10 @@ export class BillingController {
   @Get()
   getHello(): string {
     return this.billingService.getHello();
+  }
+
+  @EventPattern('order_created')
+  handleOrderCreated(data: any) {
+    this.billingService.handleOrderCreated(data);
   }
 }
