@@ -1,22 +1,31 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { CreateOrderRequest } from './create-order-request-dto';
+import { CreateOrderRequest } from './create-order-request.dto';
+import { GetUserRequest } from './get-user-request.dto';
 import { OrderCreatedEvent } from './order-created.event';
 
 @Injectable()
 export class ApiGatewayService {
   constructor(
     @Inject('BILLING_SERVICE') private readonly billingClient: ClientKafka,
+    @Inject('AUTH_SERVICE') private readonly authClient: ClientKafka,
   ) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  getHealth(): { status: string } {
+    return { status: 'OK' };
   }
 
-  createOrder({ userId, price }: CreateOrderRequest): void {
-    this.billingClient.emit(
-      'order_created',
-      new OrderCreatedEvent('123', userId, price),
-    );
+  createOrder({ userId, price }: CreateOrderRequest): { status: string } {
+    this.authClient
+      .send('get_user', new GetUserRequest(userId))
+      .subscribe((user) => {
+        this.billingClient.emit(
+          'order_created',
+          new OrderCreatedEvent(uuidv4(), user.stripeId, price),
+        );
+      });
+    return { status: 'SENT' };
   }
 }

@@ -14,9 +14,14 @@ describe('BillingController', () => {
     billingController = app.get<BillingController>(BillingController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(billingController.getHello()).toBe('Hello World!');
+  describe('order_created Event', () => {
+    it('order_created calls order created handle', () => {
+      const result = billingController.handleOrderCreated({
+        orderId: '1234',
+        userStripeId: '1234',
+        price: 100,
+      });
+      expect(result).toBeCalled();
     });
   });
 });

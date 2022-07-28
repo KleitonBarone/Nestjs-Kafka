@@ -1,14 +1,14 @@
 export class OrderCreatedEvent {
   constructor(
     public readonly orderId: string,
-    public readonly userId: string,
+    public readonly userStripeId: string,
     public readonly price: number,
   ) {}
 
   toString(): string {
     return JSON.stringify({
       orderId: this.orderId,
-      userId: this.userId,
+      userStripeId: this.userStripeId,
       price: this.price,
     });
   }

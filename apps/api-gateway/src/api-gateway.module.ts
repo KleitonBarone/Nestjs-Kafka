@@ -20,6 +20,21 @@ import { ApiGatewayService } from './api-gateway.service';
         },
       },
     ]),
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'auth',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'auth-consumer',
+          },
+        },
+      },
+    ]),
   ],
   controllers: [ApiGatewayController],
   providers: [ApiGatewayService],
