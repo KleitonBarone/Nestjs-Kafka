@@ -24,6 +24,13 @@ describe('ApiGatewayController', () => {
     apiGatewayController = app.get<ApiGatewayController>(ApiGatewayController);
   });
 
+  describe('Class Init', () => {
+    it('should call init function', () => {
+      apiGatewayController.onModuleInit();
+      expect(mockAuthService.subscribeToResponseOf).toBeCalledWith('get_user');
+    });
+  });
+
   describe('Health Endpoint', () => {
     it('should return OK Status', () => {
       expect(apiGatewayController.getHealth()).toEqual({ status: 'OK' });
