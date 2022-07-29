@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BillingController } from './billing.controller';
+import { mockBillingService } from './billing.mock';
 import { BillingService } from './billing.service';
 
 describe('BillingController', () => {
@@ -8,7 +9,12 @@ describe('BillingController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [BillingController],
-      providers: [BillingService],
+      providers: [
+        {
+          provide: BillingService,
+          useValue: mockBillingService,
+        },
+      ],
     }).compile();
 
     billingController = app.get<BillingController>(BillingController);
@@ -16,12 +22,13 @@ describe('BillingController', () => {
 
   describe('order_created Event', () => {
     it('order_created calls order created handle', () => {
-      const result = billingController.handleOrderCreated({
-        orderId: '1234',
-        userStripeId: '1234',
-        price: 100,
-      });
-      expect(result).toBeCalled();
+      const data = {
+        orderId: '123',
+        userStripeId: '123',
+        price: 123,
+      };
+      billingController.handleOrderCreated(data);
+      expect(mockBillingService.handleOrderCreated).toBeCalledWith(data);
     });
   });
 });
