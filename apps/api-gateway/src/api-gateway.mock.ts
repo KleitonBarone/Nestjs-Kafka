@@ -13,3 +13,17 @@ export const mockApiGatewayService = {
 export const mockAuthService = {
   subscribeToResponseOf: jest.fn(),
 } as unknown as ClientKafka;
+
+export const mockBillingClient = {
+  emit: jest.fn(),
+} as unknown as ClientKafka;
+
+export const mockAuthClient = {
+  send: jest.fn(() => {
+    return {
+      subscribe: jest.fn(() => {
+        mockBillingClient.emit('order_created', {});
+      }),
+    };
+  }),
+} as unknown as ClientKafka;

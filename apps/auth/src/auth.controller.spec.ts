@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
+import { mockAuthService } from './auth.mock';
 import { AuthService } from './auth.service';
 
 describe('AuthController', () => {
@@ -8,7 +9,12 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [AuthService],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
+      ],
     }).compile();
 
     authController = app.get<AuthController>(AuthController);
@@ -16,10 +22,13 @@ describe('AuthController', () => {
 
   describe('get_user Message', () => {
     it('get_user returns user', () => {
-      const result = authController.getUser({
+      const data = {
         userId: '123',
-      });
-      expect(result).toBeCalled();
+      };
+      const result = authController.getUser(data);
+
+      expect(mockAuthService.getUser).toBeCalledWith(data);
+      expect(result).toEqual(mockAuthService.getUser(data));
     });
   });
 });
