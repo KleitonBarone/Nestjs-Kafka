@@ -18,14 +18,18 @@ export class ApiGatewayService {
   }
 
   createOrder({ userId, price }: CreateOrderRequest): { status: string } {
-    this.authClient
-      .send('get_user', new GetUserRequest(userId))
-      .subscribe((user) => {
-        this.billingClient.emit(
-          'order_created',
-          new OrderCreatedEvent(uuidv4(), user.stripeId, price),
-        );
-      });
+    const authObservable = this.authClient.send(
+      'get_user',
+      new GetUserRequest(userId),
+    );
+
+    authObservable.subscribe((user) => {
+      this.billingClient.emit(
+        'order_created',
+        new OrderCreatedEvent(uuidv4(), user.stripeId, price),
+      );
+    });
+
     return { status: 'SENT' };
   }
 }
