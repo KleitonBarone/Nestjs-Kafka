@@ -31,10 +31,10 @@ export const mockAuthClient = {
 } as unknown as ClientKafka;
 
 export const mockObservable = {
-  subscribe: jest.fn((user) => {
-    mockBillingClient.emit(
-      'order_created',
-      new OrderCreatedEvent('123', user.stripeId, 100),
-    );
+  subscribe: jest.fn((callback) => {
+    callback({
+      userId: '123',
+      stripeId: '43324',
+    });
   }),
 } as unknown as Observable<any>;
